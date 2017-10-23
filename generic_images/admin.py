@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.contenttypes.generic import GenericTabularInline
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.utils.translation import ugettext_lazy as _
 
 from generic_images.models import AttachedImage
