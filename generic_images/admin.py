@@ -26,6 +26,7 @@ def attachedimage_form_factory(lang='en', debug=False):
 
         class Meta:
             model = AttachedImage
+            exclude = []
     return _AttachedImageAdminForm
 
 AttachedImageAdminForm = attachedimage_form_factory()
