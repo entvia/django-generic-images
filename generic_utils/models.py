@@ -2,7 +2,8 @@
 
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.generic import GenericForeignKey
+#from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 from generic_utils.managers import GenericModelManager, GenericInjector
 
@@ -22,12 +23,10 @@ class GenericModelBase(models.Model):
             attached to.    
         
     '''
-
-    content_type = models.ForeignKey(ContentType)
-    
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    
-    content_object = GenericForeignKey()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
     ''' A GenericForeignKey attribute pointing to the object the comment is
        attached to. You can use this to get at the related object
        (i.e. my_model.content_object). Since this field is a
@@ -54,9 +53,9 @@ class TrueGenericModelBase(models.Model):
         It is similar to :class:`~generic_utils.models.GenericModelBase` but
         with TextField object_id instead of PositiveIntegerField.
     '''
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.TextField()
-    content_object = GenericForeignKey()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     objects = GenericModelManager()
     injector = GenericInjector()

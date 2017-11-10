@@ -12,6 +12,8 @@ from generic_images.signals import image_saved, image_deleted
 from generic_images.managers import AttachedImageManager
 from generic_utils.models import GenericModelBase
 
+def _upload_path_wrapper(self, filename):
+    return self.get_upload_path(filename)
 
 class BaseImageModel(models.Model):
     ''' Simple abstract Model class with image field.
@@ -25,8 +27,8 @@ class BaseImageModel(models.Model):
         ''' Override this to customize upload path '''
         raise NotImplementedError
 
-    def _upload_path_wrapper(self, filename):
-        return self.get_upload_path(filename)
+#     def _upload_path_wrapper(self, filename):
+#         return self.get_upload_path(filename)
 
     image = models.ImageField(_('Image'), upload_to=_upload_path_wrapper)
 
