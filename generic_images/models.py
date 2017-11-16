@@ -101,6 +101,16 @@ class AbstractAttachedImage(ReplaceOldImageModel, GenericModelBase):
     '''Default manager of :class:`~generic_images.managers.AttachedImageManager`
     type.'''
 
+    # show main image in admin
+    def admin_thumbnail(self):
+        try:
+            return u'<img src="%s" / width="120">' % self.image.url
+        except AttributeError:
+            return u'<img src="#" / width="120">'
+        
+    admin_thumbnail.short_description = _('Thumbnail')
+    admin_thumbnail.allow_tags = True
+
     def next(self):
         ''' Returns next image for same content_object and None if image is
         the last. '''
