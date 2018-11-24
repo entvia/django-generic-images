@@ -1,7 +1,7 @@
 #coding: utf-8
 import os
 #import random
-
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
@@ -11,9 +11,20 @@ from django.utils.translation import ugettext_lazy as _
 from generic_images.signals import image_saved, image_deleted
 from generic_images.managers import AttachedImageManager
 from generic_utils.models import GenericModelBase
+from django.conf import settings
 
 def _upload_path_wrapper(self, filename):
     return self.get_upload_path(filename)
+
+def validate_file_extension(value):
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
+    if hasattr(settings, 'GENERIC_IMAGES_ACCEPT_EXTENSIONS'):
+        valid_extensions = settings.GENERIC_IMAGES_ACCEPT_EXTENSIONS
+    else:
+        valid_extensions = ['.png', '.jpg', '.jpeg', '.bmp']
+    if not ext.lower() in valid_extensions: 
+        raise ValidationError(u'Unsupported image extension. Valid extensions: %s' %
+                              ", ".join(valid_extensions))
 
 class BaseImageModel(models.Model):
     ''' Simple abstract Model class with image field.
@@ -30,7 +41,7 @@ class BaseImageModel(models.Model):
 #     def _upload_path_wrapper(self, filename):
 #         return self.get_upload_path(filename)
 
-    image = models.ImageField(_('Image'), upload_to=_upload_path_wrapper)
+    image = models.ImageField(_('Image'), upload_to=_upload_path_wrapper, validators=[validate_file_extension])
 
     class Meta:
         abstract = True
